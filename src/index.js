@@ -1,33 +1,24 @@
+import DOCS from './help.html'
+
 addEventListener("fetch", (event) => {
   event.passThroughOnException();
   event.respondWith(handleRequest(event.request));
 });
-import DOCS from './help.html'
- 
-// return docs
-if (url.pathname === "/") {
-  return new Response(DOCS, {
-    status: 200,
-    headers: {
-      "content-type": "text/html"
-    }
-  });
-}
 
 const dockerHub = "https://registry-1.docker.io";
 
 const routes = {
   // production
   "docker.hlds.fun": dockerHub,
-  "quay..hlds.fun": "https://quay.io",
-  "gcr..hlds.fun": "https://gcr.io",
-  "k8s-gcr..hlds.fun": "https://k8s.gcr.io",
+  "quay.hlds.fun": "https://quay.io",
+  "gcr.hlds.fun": "https://gcr.io",
+  "k8s-gcr.hlds.fun": "https://k8s.gcr.io",
   "k8s.hlds.fun": "https://registry.k8s.io",
   "ghcr.hlds.fun": "https://ghcr.io",
   "cloudsmith.hlds.fun": "https://docker.cloudsmith.io",
 
   // staging
-  "docker-staging.libcuda.so": dockerHub,
+  "docker-staging.hlds.fun": dockerHub,
 };
 
 function routeByHosts(host) {
@@ -52,6 +43,15 @@ async function handleRequest(request) {
         status: 404,
       }
     );
+  }
+  // return docs
+  if (url.pathname === "/") {
+    return new Response(DOCS, {
+      status: 200,
+      headers: {
+        "content-type": "text/html"
+      }
+    });
   }
   const isDockerHub = upstream == dockerHub;
   const authorization = request.headers.get("Authorization");
